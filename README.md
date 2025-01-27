@@ -23,25 +23,39 @@ clients: [Clients.TWITTER, Clients.DISCORD],
 clients: ["twitter", "discord"]
 ```
 
-## Duplicate the .env.example template
+## Environment Setup
 
+### Required Environment Variables
+The following environment variables are required for the application to run:
+
+```bash
+# Core Variables (Required)
+DAEMON_PROCESS=true        # Important: Must be true in production to disable interactive mode
+SERVER_PORT=3000          # The port your service will run on
+DATABASE_URL             # Your PostgreSQL database connection string
+
+# Model Provider (At least one required)
+OPENAI_API_KEY          # OpenAI API key for GPT models
+# OR
+OPENROUTER_API_KEY      # OpenRouter API key for alternative models
+
+# Optional Client-Specific Variables (Required if using specific clients)
+DISCORD_APPLICATION_ID  # Required for Discord integration
+DISCORD_API_TOKEN      # Required for Discord bot functionality
+TELEGRAM_BOT_TOKEN     # Required for Telegram bot functionality
+GITBOOK_SPACE_ID       # Required for Gitbook integration
+```
+
+### Development Setup
+1. Duplicate the .env.example template:
 ```bash
 cp .env.example .env
 ```
 
-\* Fill out the .env file with your own values.
+2. Fill out the .env file with your own values.
 
-### Add login credentials and keys to .env
-```
-DISCORD_APPLICATION_ID="discord-application-id"
-DISCORD_API_TOKEN="discord-api-token"
-...
-OPENROUTER_API_KEY="sk-xx-xx-xxx"
-...
-TWITTER_USERNAME="username"
-TWITTER_PASSWORD="password"
-TWITTER_EMAIL="your@email.com"
-```
+### Production Deployment
+When deploying to production (e.g., Fly.io), ensure these minimum environment variables are set:
 
 ## Install dependencies and start your agent
 
@@ -90,4 +104,15 @@ services:
 
 ```bash
 docker compose -f docker-compose-image.yaml up
+```
+
+## Memory Requirements
+
+The application requires a minimum of 2GB RAM to run properly. For production environments, it's recommended to:
+- Use at least 2GB RAM per instance
+- Or enable multiple machines with load balancing if using smaller memory configurations
+
+You can adjust memory in Fly.io using:
+```bash
+fly scale memory 2048  # Scales to 2GB RAM
 ```

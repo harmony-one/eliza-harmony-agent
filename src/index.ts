@@ -77,24 +77,18 @@ async function startAgent(character: Character, directClient: DirectClient) {
 
     const token = getTokenForProvider(character.modelProvider, character);
     const dataDir = path.join(__dirname, "../data");
-
     if (!fs.existsSync(dataDir)) {
       fs.mkdirSync(dataDir, { recursive: true });
     }
-
     const db = initializeDatabase(dataDir);
-
     await db.init();
-
     const cache = initializeDbCache(character, db);
     const runtime = createAgent(character, db, cache, token);
 
     await runtime.initialize();
-
     runtime.clients = await initializeClients(character, runtime);
 
     directClient.registerAgent(runtime);
-
     // report to console
     elizaLogger.debug(`Started ${character.name} as ${runtime.agentId}`);
 
@@ -104,7 +98,7 @@ async function startAgent(character: Character, directClient: DirectClient) {
       `Error starting agent for character ${character.name}:`,
       error,
     );
-    console.error(error);
+
     throw error;
   }
 }
@@ -140,34 +134,26 @@ const startAgents = async () => {
   if (charactersArg) {
     characters = await loadCharacters(charactersArg);
   }
-  console.log("characters", characters);
   try {
     for (const character of characters) {
       await startAgent(character, directClient as DirectClient);
     }
   } catch (error) {
-    console.log('FCO:::::::::::::')
-    console.log(error)
     elizaLogger.error("Error starting agents:", error);
   }
-
   while (!(await checkPortAvailable(serverPort))) {
     elizaLogger.warn(`Port ${serverPort} is in use, trying ${serverPort + 1}`);
     serverPort++;
   }
-
   // upload some agent functionality into directClient
   directClient.startAgent = async (character: Character) => {
     // wrap it so we don't have to inject directClient later
     return startAgent(character, directClient);
   };
-
   directClient.start(serverPort);
-
   if (serverPort !== parseInt(settings.SERVER_PORT || "3000")) {
     elizaLogger.log(`Server started on alternate port ${serverPort}`);
   }
-
   const isDaemonProcess = process.env.DAEMON_PROCESS === "true";
   if(!isDaemonProcess) {
     elizaLogger.log("Chat started. Type 'exit' to quit.");
@@ -177,7 +163,6 @@ const startAgents = async () => {
 };
 
 startAgents().catch((error) => {
-  console.log('FCO:::::::::::: NO WAY ::::::::::')
   console.log(error)
   elizaLogger.error("Unhandled error in startAgents:", error);
   process.exit(1);
