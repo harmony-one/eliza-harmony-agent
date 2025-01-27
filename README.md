@@ -1,5 +1,9 @@
 # Eliza
 
+## Prerequisites
+### Postgres Database Setup
+This project requires a Postgres database with the pgvector extension. For detailed instructions on setting up Postgres with pgvector on Fly.io, please refer to the [setup guide](postgres-docker-config/README.md).
+
 ## Edit the character files
 
 Open `src/character.ts` to modify the default character. Uncomment and edit.

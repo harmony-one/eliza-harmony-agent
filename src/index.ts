@@ -146,6 +146,8 @@ const startAgents = async () => {
       await startAgent(character, directClient as DirectClient);
     }
   } catch (error) {
+    console.log('FCO:::::::::::::')
+    console.log(error)
     elizaLogger.error("Error starting agents:", error);
   }
 
@@ -175,6 +177,8 @@ const startAgents = async () => {
 };
 
 startAgents().catch((error) => {
+  console.log('FCO:::::::::::: NO WAY ::::::::::')
+  console.log(error)
   elizaLogger.error("Unhandled error in startAgents:", error);
   process.exit(1);
 });
