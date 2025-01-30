@@ -1,6 +1,6 @@
 {
     "name": "harmony",
-    "clients": ["telegram"],
+    "clients": ["twitter"],
     "modelProvider": "openai",
     "settings": {
         "gitbook": {

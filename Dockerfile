@@ -107,4 +107,4 @@ COPY --from=builder /app/pnpm-lock.yaml /app/
 
 EXPOSE 3000
 
-CMD pnpm start --character="characters/harmony.character.json" --non-interactive
+CMD pnpm start --character="characters/harmonious.character.json" --non-interactive
