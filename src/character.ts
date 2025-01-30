@@ -1,7 +1,39 @@
 import { Character, Clients, defaultCharacter, ModelProviderName } from "@elizaos/core";
+import harmonyCharacter from '../characters/harmony.character.json'
+
+// Helper function to convert string to ModelProviderName
+function parseModelProvider(provider: string): ModelProviderName {
+    const upperProvider = provider.toUpperCase();
+    if (upperProvider in ModelProviderName) {
+        return ModelProviderName[upperProvider as keyof typeof ModelProviderName];
+    }
+    // Default to OPENAI if not found
+    return ModelProviderName.OPENAI;
+}
+
+// Parse and validate the imported character JSON
+function parseCharacterConfig(jsonConfig: any): Partial<Character> {
+    return {
+        ...jsonConfig,
+        modelProvider: parseModelProvider(jsonConfig.modelProvider),
+        // Ensure clients is an array of valid Clients enum values
+        clients: Array.isArray(jsonConfig.clients) 
+            ? jsonConfig.clients.map((client: string) => {
+                const upperClient = client.toUpperCase();
+                return upperClient in Clients 
+                    ? Clients[upperClient as keyof typeof Clients]
+                    : Clients.AUTO;
+            })
+            : [Clients.AUTO]
+    };
+}
+
+
 
 export const character: Character = {
     ...defaultCharacter,
+    // ...parseCharacterConfig(harmonyCharacter)
+    // ...defaultCharacter,
     // name: "Eliza",
     // plugins: [],
     // clients: [],

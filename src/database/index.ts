@@ -4,9 +4,9 @@ import Database from "better-sqlite3";
 import path from "path";
 
 export function initializeDatabase(dataDir: string) {
-  if (process.env.POSTGRES_URL) {
+  if (process.env.DATABASE_URL) {
     const db = new PostgresDatabaseAdapter({
-      connectionString: process.env.POSTGRES_URL,
+      connectionString: process.env.DATABASE_URL,
     });
     return db;
   } else {

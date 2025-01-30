@@ -1,0 +1,48 @@
+# FROM postgres:16.2
+
+# ENV POSTGRES_PASSWORD=postgres
+
+# # Install build dependencies
+# RUN apt-get update && \
+#     apt-get install -y --no-install-recommends \
+#     build-essential \
+#     curl \
+#     ca-certificates \
+#     postgresql-server-dev-16
+
+# # Set pgvector version
+# ARG PGVECTOR_VERSION=0.8.0
+
+# # Download and install pgvector
+# RUN curl -L -o pgvector.tar.gz "https://github.com/ankane/pgvector/archive/refs/tags/v${PGVECTOR_VERSION}.tar.gz" && \
+#     tar -xzf pgvector.tar.gz && \
+#     cd "pgvector-${PGVECTOR_VERSION}" && \
+#     make && \
+#     make install && \
+#     cd .. && \
+#     rm -rf pgvector.tar.gz "pgvector-${PGVECTOR_VERSION}"
+
+# # Cleanup
+# RUN apt-get remove -y build-essential postgresql-server-dev-16 && \
+#     apt-get autoremove -y && \
+#     apt-get clean && \
+#     rm -rf /var/lib/apt/lists/*
+
+FROM flyio/postgres-flex:16
+
+RUN apt-get update && \
+    apt-get install -y build-essential curl ca-certificates postgresql-server-dev-16 && \
+    mkdir -p /docker-entrypoint-initdb.d && \
+    curl -L -o pgvector.tar.gz "https://github.com/ankane/pgvector/archive/refs/tags/v0.8.0.tar.gz" && \
+    tar -xzf pgvector.tar.gz && \
+    cd pgvector-0.8.0 && \
+    make && \
+    make install && \
+    cd .. && \
+    rm -rf pgvector.tar.gz pgvector-0.8.0 && \
+    apt-get remove -y build-essential postgresql-server-dev-16 && \
+    apt-get autoremove -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN echo "CREATE EXTENSION IF NOT EXISTS vector;" > /docker-entrypoint-initdb.d/init-vector.sql
